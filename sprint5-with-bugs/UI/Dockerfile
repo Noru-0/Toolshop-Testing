@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
@@ -6,8 +6,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies with legacy peer deps to handle Angular version conflicts
+RUN npm ci --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -22,4 +22,4 @@ RUN npm install -g serve
 EXPOSE 3000
 
 # Start the application
-CMD ["serve", "-s", "dist", "-l", "3000"]
+CMD ["serve", "-s", "dist/toolshop", "-l", "3000"]

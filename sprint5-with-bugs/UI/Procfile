@@ -1,1 +1,1 @@
-web: npm run build && serve -s dist -l $PORT
+web: npm run build:railway && serve -s dist/toolshop -l $PORT

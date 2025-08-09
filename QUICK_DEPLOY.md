@@ -42,6 +42,14 @@ API_URL=https://your-api.railway.app
 
 ---
 
-**❌ Common Issue:** If you get "Nixpacks build failed", make sure you set the correct Root Directory for each service!
+**❌ Common Issues:**
+
+1. **"Nixpacks build failed"** → Make sure you set the correct Root Directory for each service!
+
+2. **"npm ERESOLVE dependency conflict"** → Fixed! The build now uses `--legacy-peer-deps` to handle Angular version conflicts.
+
+3. **"Node.js version v18.x detected. Angular CLI requires minimum v20.19"** → Fixed! Now using Node.js 20.
+
+4. **"Database connection refused"** → Wait a few minutes after first deploy for database to initialize.
 
 **✅ Success:** Both services should be running independently with shared database.
