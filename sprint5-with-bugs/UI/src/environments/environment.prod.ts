@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api-with-bugs.practicesoftwaretesting.com'
+  apiUrl: process.env['API_URL'] || 'http://localhost:8091'
 };

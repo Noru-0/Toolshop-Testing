@@ -1,4 +1,25 @@
-[![Run Playwright Tests 🎭](https://github.com/testsmith-io/practice-software-testing/actions/workflows/run-tests.yml/badge.svg)](https://github.com/testsmith-io/practice-software-testing/actions/workflows/run-tests.yml) [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/testsmith-io/practice-software-testing)
+[![Run Playwright Tests 🎭](https://github.com/testsmith-io/practice-softwar# URLs (local version)
+
+| URL                                                                                | Description           |
+|------------------------------------------------------------------------------------|-----------------------|
+| [http://localhost:8091](http://localhost:8091)                                     | (REST) API            |
+| [http://localhost:8091/api/documentation](http://localhost:8091/api/documentation) | Swagger               |
+| [http://localhost:1080](http://localhost:1080)                                     | MailCatcher           |
+| [http://localhost:4200](http://localhost:4200)                                     | (Angular) Application |
+| [http://localhost:8000](http://localhost:8000) (`root`/`root`)                     | PHPMyAdmin            |
+
+# Deploy to Railway
+
+For deployment instructions to Railway, see [RAILWAY_DEPLOY.md](RAILWAY_DEPLOY.md)
+
+Quick steps:
+1. Push code to GitHub
+2. Connect Railway to your GitHub repo
+3. Add MySQL database service
+4. Configure environment variables
+5. Deploy!
+
+## Switch sprintctions/workflows/run-tests.yml/badge.svg)](https://github.com/testsmith-io/practice-software-testing/actions/workflows/run-tests.yml) [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/testsmith-io/practice-software-testing)
 
 
 # Default accounts

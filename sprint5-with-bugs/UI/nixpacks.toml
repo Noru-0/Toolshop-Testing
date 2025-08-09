@@ -1,0 +1,13 @@
+# Nixpacks build configuration for Angular
+[variables]
+NODE_VERSION = "18"
+
+[phases.build]
+dependsOn = ["install"]
+cmds = ["npm run build"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[start]
+cmd = "npx serve -s dist -l $PORT"
