@@ -1,0 +1,12 @@
+{
+  "name": "toolshop-sprint5-with-bugs",
+  "version": "1.0.0",
+  "description": "Sprint 5 with bugs - Railway deployment",
+  "scripts": {
+    "build": "echo 'Please deploy individual services: API and UI'",
+    "start": "echo 'This is a multi-service application. Deploy API and UI separately.'"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}

@@ -1,24 +1,34 @@
 # Railway Deployment Guide for Sprint5-with-bugs
 
-## Chuẩn bị deploy lên Railway
+## Lỗi Build và Cách Khắc Phục
 
-### 1. Tạo tài khoản Railway
-- Truy cập [railway.app](https://railway.app)
-- Đăng ký/đăng nhập bằng GitHub account
+Railway đang cố gắng build từ root directory. Để fix lỗi này, bạn cần deploy từng service riêng biệt.
 
-### 2. Chuẩn bị repository
-- Push code lên GitHub repository
-- Đảm bảo có các file: `railway.toml`, `Dockerfile`, `Procfile` đã được tạo
+## Cách Deploy Đúng
 
-### 3. Deploy bằng Railway
+### Phương pháp 1: Deploy từng service riêng biệt (Khuyến nghị)
 
-#### Cách 1: Deploy từ GitHub (Khuyến nghị)
-1. Trên Railway dashboard, click "New Project"
+#### Bước 1: Deploy API Service
+1. Trên Railway dashboard, tạo "New Project"
+2. Chọn "Deploy from GitHub repo" 
+3. Chọn repository của bạn
+4. Trong **Root Directory**, nhập: `sprint5-with-bugs/API`
+5. Railway sẽ detect Laravel và build đúng
+
+#### Bước 2: Deploy UI Service  
+1. Tạo service mới trong cùng project
 2. Chọn "Deploy from GitHub repo"
-3. Chọn repository chứa project
-4. Railway sẽ tự động detect và deploy
+3. Chọn cùng repository
+4. Trong **Root Directory**, nhập: `sprint5-with-bugs/UI`
+5. Railway sẽ detect Angular và build đúng
 
-#### Cách 2: Deploy bằng Railway CLI
+#### Bước 3: Thêm Database
+1. Trong project, click "New Service"
+2. Chọn "Database" → "MySQL"
+3. Lưu lại connection details
+
+### Phương pháp 2: Sử dụng Railway CLI
+
 ```bash
 # Install Railway CLI
 npm install -g @railway/cli
@@ -26,78 +36,89 @@ npm install -g @railway/cli
 # Login
 railway login
 
-# Deploy
+# Deploy API
+cd sprint5-with-bugs/API
+railway up
+
+# Deploy UI (trong terminal mới)
+cd sprint5-with-bugs/UI  
 railway up
 ```
 
-### 4. Cấu hình Environment Variables
+## Cấu hình Environment Variables
 
-#### Cho API Service:
+### Cho API Service:
 ```
 APP_NAME=ToolShop-API
 APP_ENV=production
-APP_KEY=base64:YOUR_APP_KEY_HERE
+APP_KEY=base64:YOUR_APP_KEY_HERE (generate bằng: php artisan key:generate --show)
 APP_DEBUG=false
 APP_URL=https://your-api-domain.railway.app
 
 DB_CONNECTION=mysql
-DB_HOST=railway-mysql-host
-DB_PORT=3306
+DB_HOST=monorail.proxy.rlwy.net (từ Railway MySQL)
+DB_PORT=12345 (từ Railway MySQL)
 DB_DATABASE=railway
-DB_USERNAME=root
-DB_PASSWORD=railway-mysql-password
+DB_USERNAME=root  
+DB_PASSWORD=your-mysql-password (từ Railway MySQL)
 
 LOG_CHANNEL=stack
 LOG_LEVEL=error
 
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.mailtrap.io
-MAIL_PORT=2525
-MAIL_USERNAME=your-username
-MAIL_PASSWORD=your-password
+# CORS Settings để UI có thể connect
+FRONTEND_URL=https://your-ui-domain.railway.app
 ```
 
-#### Cho UI Service:
+### Cho UI Service:
 ```
 NODE_ENV=production
 API_URL=https://your-api-domain.railway.app
 ```
 
-### 5. Thêm MySQL Database
-1. Trong Railway project, click "New Service"
-2. Chọn "Database" → "MySQL"
-3. Railway sẽ tạo MySQL instance và cung cấp connection details
+## Cấu hình CORS trong Laravel
 
-### 6. Connect Services
-- Đảm bảo UI service có thể connect tới API service
-- Cấu hình CORS trong Laravel API để accept requests từ UI domain
+Cập nhật file `config/cors.php` trong API:
 
-### 7. Custom Domains (Optional)
-- Trong service settings, có thể add custom domain
-- Hoặc sử dụng domain mặc định của Railway
+```php
+'allowed_origins' => [
+    'https://your-ui-domain.railway.app',
+    'http://localhost:4200', // for local development
+],
+```
+
+## URLs sau khi deploy
+- API: `https://your-api-service.railway.app`
+- UI: `https://your-ui-service.railway.app`  
+- API Docs: `https://your-api-service.railway.app/api/documentation`
+
+## Troubleshooting Build Issues
+
+### Nếu API build fail:
+1. Đảm bảo có file `composer.json` trong `sprint5-with-bugs/API`
+2. Check PHP version trong `composer.json` (should be ^8.1)
+3. Xem logs để debug dependency issues
+
+### Nếu UI build fail:
+1. Đảm bảo có file `package.json` trong `sprint5-with-bugs/UI`
+2. Check Node version (Railway supports Node 18+)
+3. Đảm bảo build script hoạt động: `npm run build`
+
+### Database connection issues:
+1. Copy chính xác database credentials từ Railway
+2. Đảm bảo `DB_HOST` và `DB_PORT` đúng format từ Railway
+3. Test connection trong Railway logs
 
 ## Lưu ý quan trọng
 
-1. **Database Migration**: API service sẽ tự động chạy migrations khi deploy
-2. **Environment Variables**: Phải cấu hình đầy đủ trước khi deploy
-3. **File Storage**: Railway có ephemeral file system, cân nhắc sử dụng cloud storage cho files
-4. **Logs**: Có thể xem logs trực tiếp trên Railway dashboard
+1. **Root Directory**: Phải set đúng path khi deploy từ GitHub
+2. **Environment Variables**: Cấu hình đầy đủ trước khi deploy
+3. **Domain Configuration**: API và UI cần biết domain của nhau
+4. **Database Migration**: Sẽ tự động chạy khi API service start lần đầu
 
-## Troubleshooting
-
-### Build fails:
-- Kiểm tra Dockerfile và dependencies
-- Xem logs để debug
-
-### Database connection fails:
-- Verify database environment variables
-- Đảm bảo database service đã được tạo
-
-### CORS errors:
-- Cấu hình CORS trong Laravel config/cors.php
-- Thêm domain của UI vào allowed origins
-
-## URL sau khi deploy
-- API: `https://your-api-service.railway.app`
-- UI: `https://your-ui-service.railway.app`
-- Database: Accessible internally trong Railway network
+## Cấu trúc sau khi deploy thành công:
+```
+Railway Project
+├── API Service (sprint5-with-bugs/API)
+├── UI Service (sprint5-with-bugs/UI)  
+└── MySQL Database
+```
