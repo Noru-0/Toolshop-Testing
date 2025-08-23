@@ -40,5 +40,5 @@ RUN chmod +x deploy-check.sh
 # Expose the port that Railway will assign
 EXPOSE $PORT
 
-# Use production startup script to reduce logging
-CMD ["./start-prod.sh"]
+# Use original working startup script with reduced logging
+CMD ["./start.sh"]

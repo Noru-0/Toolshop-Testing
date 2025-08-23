@@ -1,1 +1,1 @@
-web: chmod +x start-prod.sh && chmod +x deploy-check.sh && ./start-prod.sh
+web: chmod +x start.sh && chmod +x deploy-check.sh && ./start.sh
