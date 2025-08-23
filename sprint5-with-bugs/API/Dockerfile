@@ -32,12 +32,13 @@ RUN composer install --optimize-autoloader --no-dev
 # Generate application key
 RUN php artisan key:generate
 
-# Make startup script executable
+# Make startup scripts executable
 RUN chmod +x start.sh
+RUN chmod +x start-prod.sh
 RUN chmod +x deploy-check.sh
 
 # Expose the port that Railway will assign
 EXPOSE $PORT
 
-# Use startup script instead of php-fpm
-CMD ["./start.sh"]
+# Use production startup script to reduce logging
+CMD ["./start-prod.sh"]

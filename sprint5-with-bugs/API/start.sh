@@ -56,14 +56,14 @@ php artisan migrate:status || {
 
 # Run migrations and seed
 echo "Running migrations..."
-php artisan migrate --force || echo "Migrations failed, continuing..."
+php artisan migrate --force > /dev/null 2>&1 || echo "Migrations failed, continuing..."
 
 echo "Seeding database..."
-php artisan db:seed --force || echo "Seeding failed, continuing..."
+php artisan db:seed --force > /dev/null 2>&1 || echo "Seeding failed, continuing..."
 
 # Generate Swagger documentation
 echo "Generating API documentation..."
-php artisan l5-swagger:generate || echo "Swagger generation failed, continuing..."
+php artisan l5-swagger:generate > /dev/null 2>&1 || echo "Swagger generation failed, continuing..."
 
 # Create a health check endpoint
 echo "Setting up health check..."
