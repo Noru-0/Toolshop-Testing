@@ -70,12 +70,17 @@ echo "Setting up health check..."
 
 # Start the application with enhanced error handling
 echo "Starting Laravel application on 0.0.0.0:$PORT"
-echo "Health check will be available at: $APP_URL/health"
+echo "Health check will be available at: $APP_URL/api/health"
+echo "Status check will be available at: $APP_URL/api/status"
 
-# Start with timeout and error handling
-timeout 300 php artisan serve --host=0.0.0.0 --port=$PORT || {
-    echo "ERROR: Laravel failed to start within 5 minutes"
-    echo "Attempting restart with debug mode..."
-    export APP_DEBUG=true
-    php artisan serve --host=0.0.0.0 --port=$PORT
-}
+# Verify port is numeric and valid
+if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: PORT is not a valid number: $PORT"
+    export PORT=8000
+    echo "Using fallback PORT: 8000"
+fi
+
+echo "Final startup command: php artisan serve --host=0.0.0.0 --port=$PORT"
+
+# Start with exec to replace shell process
+exec php artisan serve --host=0.0.0.0 --port=$PORT

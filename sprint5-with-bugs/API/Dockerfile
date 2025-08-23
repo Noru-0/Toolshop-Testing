@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
+    mysql-client \
+    netcat-openbsd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -32,6 +34,12 @@ RUN composer install --optimize-autoloader --no-dev
 # Generate application key
 RUN php artisan key:generate
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+# Make startup script executable
+RUN chmod +x start.sh
+RUN chmod +x deploy-check.sh
+
+# Expose the port that Railway will assign
+EXPOSE $PORT
+
+# Use startup script instead of php-fpm
+CMD ["./start.sh"]
