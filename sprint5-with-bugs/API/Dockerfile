@@ -9,8 +9,6 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    mysql-client \
-    netcat-openbsd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions

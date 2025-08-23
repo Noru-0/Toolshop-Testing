@@ -23,9 +23,9 @@ fi
 echo "Waiting for database connection..."
 sleep 15
 
-# Add database connectivity test
-echo "Testing database connectivity..."
-timeout 30 bash -c 'until mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USERNAME" -p"$DB_PASSWORD" -e "SELECT 1"; do echo "Waiting for database..."; sleep 2; done' || echo "Database test failed, continuing anyway..."
+# Test database connection using Laravel artisan instead of mysql client
+echo "Testing database connectivity using Laravel..."
+php artisan migrate:status > /dev/null 2>&1 && echo "✅ Database connection successful" || echo "⚠️ Database connection failed, continuing anyway..."
 
 # Clear all caches
 echo "Clearing caches..."

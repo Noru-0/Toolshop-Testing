@@ -42,7 +42,7 @@ if [ -z "$DB_HOST" ]; then
 else
     echo "Testing connection to: $DB_HOST:$DB_PORT"
     
-    # Simple connection test
+    # Laravel-based connection test (no mysql client needed)
     php artisan migrate:status > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo "✅ Database connection successful"
