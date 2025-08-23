@@ -70,7 +70,8 @@ echo "Setting up health check..."
 
 # Start the application with enhanced error handling
 echo "Starting Laravel application on 0.0.0.0:$PORT"
-echo "Health check will be available at: $APP_URL/api/health"
+echo "Health check will be available at: $APP_URL/health"
+echo "API health check will be available at: $APP_URL/api/health"
 echo "Status check will be available at: $APP_URL/api/status"
 
 # Verify port is numeric and valid
@@ -82,5 +83,6 @@ fi
 
 echo "Final startup command: php artisan serve --host=0.0.0.0 --port=$PORT"
 
-# Start with exec to replace shell process
+# Start with exec to replace shell process and enable proper signal handling
+echo "Executing Laravel development server..."
 exec php artisan serve --host=0.0.0.0 --port=$PORT
