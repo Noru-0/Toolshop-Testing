@@ -13,21 +13,44 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
 */
 
+// Health check endpoint
+Route::get('/health', function () {
+    try {
+        // Test database connection
+        DB::connection()->getPdo();
+        $dbStatus = 'connected';
+    } catch (\Exception $e) {
+        $dbStatus = 'disconnected: ' . $e->getMessage();
+    }
+    
+    return response()->json([
+        'status' => 'OK',
+        'timestamp' => now(),
+        'database' => $dbStatus,
+        'app' => config('app.name'),
+        'env' => config('app.env'),
+        'port' => env('PORT', '8000'),
+        'url' => env('APP_URL', 'localhost')
+    ]);
+});
+
+// Status endpoint (simpler version)
 Route::get('/status', function () {
-    return response()->json(['version' => config('app.version'), 'environment' => env('APP_ENV'), 'app_name' => env('APP_NAME')], 200,
-        ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE);
+    return response()->json([
+        'version' => config('app.version'), 
+        'environment' => env('APP_ENV'), 
+        'app_name' => env('APP_NAME'),
+        'timestamp' => now()
+    ], 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE);
 });
 
 Route::get('/logs/laravel.log', function () {
