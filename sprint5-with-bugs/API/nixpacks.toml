@@ -1,6 +1,6 @@
 # Nixpacks build configuration
 [variables]
-NODE_VERSION = "18"
+NODE_VERSION = "20"
 PHP_VERSION = "8.2"
 
 [phases.build]

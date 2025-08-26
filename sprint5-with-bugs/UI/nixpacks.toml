@@ -10,16 +10,4 @@ dependsOn = ["install"]
 cmds = ["npm run build"]
 
 [start]
-cmd = "npx serve -s dist/toolshop -l $PORT"ild configuration for Angular
-[variables]
-NODE_VERSION = "18"
-
-[phases.install]
-cmds = ["npm ci --legacy-peer-deps"]
-
-[phases.build]
-dependsOn = ["install"]
-cmds = ["npm run build:railway"]
-
-[start]
 cmd = "npx serve -s dist/toolshop -l $PORT"
