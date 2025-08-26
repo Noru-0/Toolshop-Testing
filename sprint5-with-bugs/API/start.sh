@@ -29,10 +29,12 @@ php artisan migrate:status > /dev/null 2>&1 && echo "✅ Database connection suc
 
 # Clear all caches
 echo "Clearing caches..."
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
+# Ensure storage permissions
+chmod -R 775 storage bootstrap/cache || echo "Permission update failed"
+php artisan config:clear || echo "Config clear failed"
+php artisan cache:clear || echo "Cache clear failed"  
+php artisan route:clear || echo "Route clear failed"
+php artisan view:clear || echo "View clear failed"
 
 # Generate application key if not set
 if [ -z "$APP_KEY" ]; then

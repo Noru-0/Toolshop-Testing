@@ -10,4 +10,4 @@ dependsOn = ["install"]
 cmds = ["npm run build"]
 
 [start]
-cmd = "npx serve -s dist/toolshop -l $PORT"
+cmd = "npx serve -s dist/toolshop -l $PORT -n --single"

@@ -9,11 +9,14 @@ services:
     working_dir: /var/www
     volumes:
       - ./${SPRINT}/API:/var/www:cached
+    ports:
+      - "8080:8000"
     environment:
       - "PHP_OPCACHE_VALIDATE_TIMESTAMPS=1"
       - "DB_PORT=3306"
       - "DB_HOST=mariadb"
       - "host=localhost"
+      - "PORT=8000"
       - DISABLE_LOGGING=${DISABLE_LOGGING}
 
   angular-ui:
