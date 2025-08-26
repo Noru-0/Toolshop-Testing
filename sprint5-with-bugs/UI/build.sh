@@ -2,7 +2,7 @@
 
 echo "=== Building Angular Application for Railway ==="
 echo "NODE_ENV: ${NODE_ENV:-development}"
-echo "API_URL: ${API_URL:-http://localhost:8091}"
+echo "API_URL: ${API_URL:-https://toolshop-testing-production.up.railway.app/api}"
 
 # Build the Angular application
 echo "Running Angular build..."
@@ -11,12 +11,10 @@ ng build --configuration production
 # Replace API_URL placeholder with environment variable if set
 if [ ! -z "$API_URL" ]; then
     echo "Replacing API URL with: $API_URL"
-    find dist/toolshop -name "*.js" -exec sed -i "s|http://localhost:8091|$API_URL|g" {} \;
     find dist/toolshop -name "*.js" -exec sed -i "s|https://toolshop-testing-production.up.railway.app/api|$API_URL|g" {} \;
     echo "API URL replacement completed"
 else
     echo "No API_URL provided, using default Railway URL"
-    find dist/toolshop -name "*.js" -exec sed -i "s|http://localhost:8091|https://toolshop-testing-production.up.railway.app/api|g" {} \;
 fi
 
 # Verify build output
