@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8091'
+  apiUrl: process.env['API_URL'] || 'https://toolshop-testing-production.up.railway.app/api'
 };

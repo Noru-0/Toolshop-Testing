@@ -22,6 +22,21 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
+// Root API endpoint
+Route::get('/', function () {
+    return response()->json([
+        'message' => 'ToolShop API is running!',
+        'timestamp' => now(),
+        'version' => '1.0.0',
+        'health_check' => url('/api/health'),
+        'status_check' => url('/api/status'),
+        'ping' => url('/api/ping'),
+        'documentation' => url('/api/documentation'),
+        'app' => config('app.name'),
+        'env' => config('app.env')
+    ]);
+});
+
 // Health check endpoint
 Route::get('/health', function () {
     try {
