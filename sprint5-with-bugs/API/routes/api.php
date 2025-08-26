@@ -43,6 +43,17 @@ Route::get('/health', function () {
     ]);
 });
 
+// Simple ping endpoint (no database required)
+Route::get('/ping', function () {
+    return response()->json([
+        'status' => 'OK',
+        'timestamp' => now(),
+        'message' => 'API is running',
+        'app' => config('app.name'),
+        'env' => config('app.env')
+    ]);
+});
+
 // Status endpoint (simpler version)
 Route::get('/status', function () {
     return response()->json([

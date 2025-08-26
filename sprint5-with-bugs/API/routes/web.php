@@ -16,24 +16,26 @@ use Illuminate\Support\Facades\DB;
 
 // Root health check (no /api prefix)
 Route::get('/health', function () {
-    try {
-        // Test database connection
-        DB::connection()->getPdo();
-        $dbStatus = 'connected';
-    } catch (\Exception $e) {
-        $dbStatus = 'disconnected: ' . $e->getMessage();
-    }
-    
-    return response()->json([
+    $response = [
         'status' => 'OK',
         'timestamp' => now(),
-        'database' => $dbStatus,
         'app' => config('app.name'),
         'env' => config('app.env'),
         'port' => env('PORT', '8000'),
         'url' => env('APP_URL', 'localhost'),
         'route' => 'web'
-    ]);
+    ];
+    
+    // Try database connection but don't fail if unavailable
+    try {
+        DB::connection()->getPdo();
+        $response['database'] = 'connected';
+    } catch (\Exception $e) {
+        $response['database'] = 'unavailable';
+        $response['database_error'] = $e->getMessage();
+    }
+    
+    return response()->json($response);
 });
 
 // Simple status endpoint

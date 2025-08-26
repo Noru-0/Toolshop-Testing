@@ -21,11 +21,21 @@ fi
 
 # Wait for database with health check
 echo "Waiting for database connection..."
-sleep 15
+# Longer wait for Railway database startup
+sleep 30
 
 # Test database connection using Laravel artisan instead of mysql client
 echo "Testing database connectivity using Laravel..."
-php artisan migrate:status > /dev/null 2>&1 && echo "✅ Database connection successful" || echo "⚠️ Database connection failed, continuing anyway..."
+# Try multiple times with backoff
+for i in {1..5}; do
+    if php artisan migrate:status > /dev/null 2>&1; then
+        echo "✅ Database connection successful"
+        break
+    else
+        echo "⚠️ Database connection attempt $i failed, retrying in 10 seconds..."
+        sleep 10
+    fi
+done
 
 # Clear all caches
 echo "Clearing caches..."
@@ -48,20 +58,20 @@ php artisan config:cache
 
 # Test database connection
 echo "Testing database connection..."
-php artisan migrate:status || {
-    echo "Database connection failed, retrying in 10 seconds..."
-    sleep 10
-    php artisan migrate:status || {
-        echo "Database still not available, but continuing with app start..."
-    }
-}
+# Try database connection before migrations
+if php artisan migrate:status > /dev/null 2>&1; then
+    echo "✅ Database connection established"
+    
+    # Run migrations and seed
+    echo "Running migrations..."
+    php artisan migrate --force > /dev/null 2>&1 || echo "⚠️ Migrations failed, continuing..."
 
-# Run migrations and seed
-echo "Running migrations..."
-php artisan migrate --force > /dev/null 2>&1 || echo "Migrations failed, continuing..."
-
-echo "Seeding database..."
-php artisan db:seed --force > /dev/null 2>&1 || echo "Seeding failed, continuing..."
+    echo "Seeding database..."
+    php artisan db:seed --force > /dev/null 2>&1 || echo "⚠️ Seeding failed, continuing..."
+else
+    echo "⚠️ Database not available yet, starting without migrations"
+    echo "App will still start - database operations will be handled at runtime"
+fi
 
 # Generate Swagger documentation
 echo "Generating API documentation..."
